@@ -2,40 +2,101 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              FlowDirection="RightToLeft">
-    <Grid Margin="10">
+    <Grid Margin="16" Background="{StaticResource BackgroundBrush}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="لوحة التحكم" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+        <!-- عنوان الصفحة -->
+        <TextBlock Grid.Row="0" Text="لوحة التحكم"
+                   FontSize="28" FontWeight="Bold"
+                   Foreground="Black"
+                   Margin="0,0,0,16"/>
 
-        <UniformGrid Grid.Row="1" Columns="2" Rows="2" Margin="0,10,0,0">
-            <Border Margin="5" Padding="10" Background="#EDF6F9" CornerRadius="6">
+        <!-- البطاقات الأربع -->
+        <UniformGrid Grid.Row="1" Columns="2" Rows="2" Margin="0,0,0,20">
+            <Border Margin="6" Padding="16" CornerRadius="8"
+                    Background="{StaticResource CardBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1"
+                    Effect="{StaticResource CardShadow}">
                 <StackPanel>
-                    <TextBlock Text="مبيعات اليوم" FontWeight="Bold"/>
-                    <TextBlock x:Name="TodaySalesText" FontSize="18" FontWeight="Bold" Foreground="#1D3557"/>
+                    <TextBlock Text="مبيعات اليوم" FontWeight="SemiBold" FontSize="16"
+                               Foreground="Black" Margin="0,0,0,8"/>
+                    <TextBlock x:Name="TodaySalesText" FontSize="26" FontWeight="Bold"
+                               Foreground="{StaticResource PrimaryBrush}"/>
                 </StackPanel>
             </Border>
-            <Border Margin="5" Padding="10" Background="#FFE5EC" CornerRadius="6">
+            <Border Margin="6" Padding="16" CornerRadius="8"
+                    Background="{StaticResource CardBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1"
+                    Effect="{StaticResource CardShadow}">
                 <StackPanel>
-                    <TextBlock Text="عمولة اليوم" FontWeight="Bold"/>
-                    <TextBlock x:Name="TodayCommissionText" FontSize="18" FontWeight="Bold" Foreground="#E63946"/>
+                    <TextBlock Text="عمولة اليوم" FontWeight="SemiBold" FontSize="16"
+                               Foreground="Black" Margin="0,0,0,8"/>
+                    <TextBlock x:Name="TodayCommissionText" FontSize="26" FontWeight="Bold"
+                               Foreground="{StaticResource DangerBrush}"/>
                 </StackPanel>
             </Border>
-            <Border Margin="5" Padding="10" Background="#E9F5DB" CornerRadius="6">
+            <Border Margin="6" Padding="16" CornerRadius="8"
+                    Background="{StaticResource CardBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1"
+                    Effect="{StaticResource CardShadow}">
                 <StackPanel>
-                    <TextBlock Text="إجمالي مديونيات التجار" FontWeight="Bold"/>
-                    <TextBlock x:Name="TotalTraderDebtsText" FontSize="18" FontWeight="Bold" Foreground="#2D6A4F"/>
+                    <TextBlock Text="إجمالي مديونيات التجار" FontWeight="SemiBold" FontSize="16"
+                               Foreground="Black" Margin="0,0,0,8"/>
+                    <TextBlock x:Name="TotalTraderDebtsText" FontSize="26" FontWeight="Bold"
+                               Foreground="Black"/>
                 </StackPanel>
             </Border>
-            <Border Margin="5" Padding="10" Background="#FFF3B0" CornerRadius="6">
+            <Border Margin="6" Padding="16" CornerRadius="8"
+                    Background="{StaticResource CardBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1"
+                    Effect="{StaticResource CardShadow}">
                 <StackPanel>
-                    <TextBlock Text="ملخص المخزون (إجمالي الكميات)" FontWeight="Bold"/>
-                    <TextBlock x:Name="TotalStockText" FontSize="18" FontWeight="Bold" Foreground="#6A4C93"/>
+                    <TextBlock Text="ملخص المخزون (إجمالي الكميات)" FontWeight="SemiBold" FontSize="16"
+                               Foreground="Black" Margin="0,0,0,8"/>
+                    <TextBlock x:Name="TotalStockText" FontSize="26" FontWeight="Bold"
+                               Foreground="Black"/>
                 </StackPanel>
             </Border>
         </UniformGrid>
+
+        <!-- منطقة الرسوم البيانية -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Margin="6" Padding="14" CornerRadius="8"
+                    Background="{StaticResource CardBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1"
+                    Effect="{StaticResource CardShadow}">
+                <StackPanel>
+                    <TextBlock Text="مبيعات آخر 7 أيام" FontWeight="SemiBold" FontSize="18"
+                               Foreground="Black" Margin="0,0,0,10"/>
+                    <Grid x:Name="SalesChartHost" Height="220"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Margin="6" Padding="14" CornerRadius="8"
+                    Background="{StaticResource CardBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1"
+                    Effect="{StaticResource CardShadow}">
+                <StackPanel>
+                    <TextBlock Text="عمولة آخر 7 أيام" FontWeight="SemiBold" FontSize="18"
+                               Foreground="Black" Margin="0,0,0,10"/>
+                    <Grid x:Name="CommissionChartHost" Height="220"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>
-
