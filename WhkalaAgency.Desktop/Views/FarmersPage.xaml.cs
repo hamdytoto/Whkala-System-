@@ -21,31 +21,36 @@ public partial class FarmersPage : UserControl
     }
 
     private void LoadFarmers()
-    {
-        var list = new List<Farmer>();
-        try
-        {
-            var table = DatabaseService.ExecuteDataTable(
-                "SELECT Id, Name, Phone, CurrentBalance, CreatedAt FROM Farmers ORDER BY Name");
-            foreach (System.Data.DataRow row in table.Rows)
-            {
-                list.Add(new Farmer
-                {
-                    Id = row.Field<int>("Id"),
-                    Name = row.Field<string>("Name") ?? "",
-                    Phone = row.Field<string?>("Phone"),
-                    CurrentBalance = row.Field<double>("CurrentBalance"),
-                    CreatedAt = DateTime.TryParse(row.Field<string>("CreatedAt"), CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt) ? dt : DateTime.Now
-                });
-            }
-        }
-        catch
-        {
-            // ignore
-        }
+{
+    var list = new List<Farmer>();
 
-        FarmersGrid.ItemsSource = list;
+    try
+    {
+        var table = DatabaseService.ExecuteDataTable(
+            "SELECT Id, Name, Phone, CurrentBalance, CreatedAt FROM Farmers ORDER BY Name");
+
+        foreach (DataRow row in table.Rows)
+        {
+            list.Add(new Farmer
+            {
+                Id = Convert.ToInt32(row["Id"]),
+                Name = row["Name"]?.ToString() ?? "",
+                Phone = row["Phone"] == DBNull.Value ? null : row["Phone"].ToString(),
+                CurrentBalance = Convert.ToDouble(row["CurrentBalance"]),
+                CreatedAt = row["CreatedAt"] == DBNull.Value
+                    ? DateTime.Now
+                    : Convert.ToDateTime(row["CreatedAt"])
+            });
+        }
     }
+    catch (Exception ex)
+    {
+        MessageBox.Show(ex.Message, "LoadFarmers Error");
+    }
+
+    FarmersGrid.ItemsSource = null;   // مهم
+    FarmersGrid.ItemsSource = list;
+}
 
     private void ShowForm(bool show, int? editId = null)
     {

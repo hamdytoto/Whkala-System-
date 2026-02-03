@@ -1,92 +1,115 @@
 <UserControl x:Class="WhkalaAgency.Desktop.Views.FarmersPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             FlowDirection="RightToLeft"
-             Background="{StaticResource BackgroundBrush}">
-    <Grid Margin="16">
+             FlowDirection="RightToLeft">
+
+    <!-- هنا حطينا الخلفية بدل UserControl -->
+    <Grid Background="{StaticResource BackgroundBrush}" Margin="16">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- عنوان الصفحة -->
-        <TextBlock Grid.Row="0" Text="إدارة المزارعين"
-                   FontSize="26" FontWeight="Bold" Foreground="Black"
+        <!-- العنوان -->
+        <TextBlock Grid.Row="0"
+                   Text="إدارة المزارعين"
+                   FontSize="26"
+                   FontWeight="Bold"
+                   Foreground="Black"
                    Margin="0,0,0,16"/>
 
-        <!-- شريط الأدوات والنموذج -->
+        <!-- الأزرار + النموذج -->
         <StackPanel Grid.Row="1" Margin="0,0,0,12">
+
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Button x:Name="BtnAdd" Content="إضافة مزارع" Style="{StaticResource PrimaryButton}"
-                        Margin="0,0,8,0" Click="BtnAdd_Click" Padding="12,0"/>
-                <Button x:Name="BtnEdit" Content="تعديل" Style="{StaticResource SecondaryButton}"
-                        Margin="0,0,8,0" Click="BtnEdit_Click"/>
-                <Button x:Name="BtnDelete" Content="حذف" Style="{StaticResource SecondaryButton}"
-                        Foreground="{StaticResource DangerBrush}" Margin="0,0,8,0" Click="BtnDelete_Click"/>
+                <Button x:Name="BtnAdd"
+                        Content="إضافة مزارع"
+                        Style="{StaticResource PrimaryButton}"
+                        Margin="0,0,8,0"
+                        Padding="12,4"
+                        Click="BtnAdd_Click"/>
+
+                <Button x:Name="BtnEdit"
+                        Content="تعديل"
+                        Style="{StaticResource SecondaryButton}"
+                        Margin="0,0,8,0"
+                        Click="BtnEdit_Click"/>
+
+                <Button x:Name="BtnDelete"
+                        Content="حذف"
+                        Style="{StaticResource SecondaryButton}"
+                        Foreground="{StaticResource DangerBrush}"
+                        Click="BtnDelete_Click"/>
             </StackPanel>
 
-            <!-- نموذج إضافة / تعديل -->
-            <Border x:Name="FormPanel" Visibility="Collapsed"
+            <!-- نموذج الإضافة / التعديل -->
+            <Border x:Name="FormPanel"
+                    Visibility="Collapsed"
                     Background="{StaticResource CardBrush}"
                     BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="1"
                     CornerRadius="8"
                     Padding="20"
                     Effect="{StaticResource CardShadow}">
+
                 <StackPanel Orientation="Horizontal">
+
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="الاسم:" VerticalAlignment="Center" Margin="0,0,8,0" MinWidth="70" Foreground="Black" FontSize="14"/>
+
+                        <TextBlock Text="الاسم:" Margin="0,0,8,0"/>
                         <TextBox x:Name="TxtName" Width="220" Margin="0,0,20,0"/>
-                        <TextBlock Text="الهاتف:" VerticalAlignment="Center" Margin="0,0,8,0" MinWidth="55" Foreground="Black" FontSize="14"/>
+
+                        <TextBlock Text="الهاتف:" Margin="0,0,8,0"/>
                         <TextBox x:Name="TxtPhone" Width="160" Margin="0,0,20,0"/>
-                        <TextBlock Text="الرصيد الحالي:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="Black" FontSize="14"/>
-                        <TextBox x:Name="TxtBalance" Width="120" Margin="0,0,20,0"/>
+
+                        <TextBlock Text="الرصيد:" Margin="0,0,8,0"/>
+                        <TextBox x:Name="TxtBalance" Width="120"/>
                     </StackPanel>
-                    <Button Content="حفظ" Style="{StaticResource PrimaryButton}" Width="100" Click="BtnSave_Click"/>
-                    <Button Content="إلغاء" Style="{StaticResource SecondaryButton}" Width="90" Margin="8,0,0,0" Click="BtnCancel_Click"/>
+
+                    <Button Content="حفظ"
+                            Style="{StaticResource PrimaryButton}"
+                            Width="100"
+                            Margin="16,0,0,0"
+                            Click="BtnSave_Click"/>
+
+                    <Button Content="إلغاء"
+                            Style="{StaticResource SecondaryButton}"
+                            Width="90"
+                            Margin="8,0,0,0"
+                            Click="BtnCancel_Click"/>
                 </StackPanel>
             </Border>
         </StackPanel>
 
-        <!-- جدول المزارعين -->
-        <Border Grid.Row="2" Background="{StaticResource CardBrush}"
+        <!-- الجدول -->
+        <Border Grid.Row="2"
+                Background="{StaticResource CardBrush}"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="1"
                 CornerRadius="8"
                 Padding="12"
                 Effect="{StaticResource CardShadow}">
+
             <DataGrid x:Name="FarmersGrid"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
                       SelectionMode="Single"
-                      SelectionChanged="FarmersGrid_SelectionChanged"
                       HeadersVisibility="Column"
                       RowHeight="40"
                       FontSize="14"
-                      BorderThickness="0"
                       GridLinesVisibility="Horizontal"
-                      HorizontalGridLinesBrush="{StaticResource BorderBrush}"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      CanUserResizeRows="False">
+                      CanUserAddRows="False">
+
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="*" MinWidth="140"/>
+                    <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="*"/>
                     <DataGridTextColumn Header="الهاتف" Binding="{Binding Phone}" Width="140"/>
-                    <DataGridTextColumn Header="الرصيد الحالي (مستحقات)" Binding="{Binding CurrentBalance, StringFormat=N2}" Width="160"/>
+                    <DataGridTextColumn Header="الرصيد"
+                                        Binding="{Binding CurrentBalance, StringFormat=N2}"
+                                        Width="160"/>
                 </DataGrid.Columns>
-                <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="FontWeight" Value="SemiBold"/>
-                        <Setter Property="Foreground" Value="Black"/>
-                        <Setter Property="Padding" Value="8,10"/>
-                    </Style>
-                </DataGrid.ColumnHeaderStyle>
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
-                        <Setter Property="Foreground" Value="Black"/>
-                    </Style>
-                </DataGrid.RowStyle>
+
             </DataGrid>
         </Border>
     </Grid>
