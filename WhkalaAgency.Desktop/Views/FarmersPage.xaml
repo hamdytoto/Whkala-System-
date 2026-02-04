@@ -3,120 +3,170 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              FlowDirection="RightToLeft">
 
-    <!-- هنا حطينا الخلفية بدل UserControl -->
-    <Grid Background="{StaticResource BackgroundBrush}" Margin="16">
-
+    <Grid Background="#F4F7FA" TextOptions.TextRenderingMode="ClearType" RenderOptions.ClearTypeHint="Enabled">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <RowDefinition Height="Auto"/> <RowDefinition Height="Auto"/> <RowDefinition Height="*"/>    </Grid.RowDefinitions>
 
-        <!-- العنوان -->
-        <TextBlock Grid.Row="0"
-                   Text="إدارة المزارعين"
-                   FontSize="26"
-                   FontWeight="Bold"
-                   Foreground="Black"
-                   Margin="0,0,0,16"/>
-
-        <!-- الأزرار + النموذج -->
-        <StackPanel Grid.Row="1" Margin="0,0,0,12">
-
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <TextBlock Text="بحث باسم المزارع أو الهاتف:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="DimGray"/>
-                <TextBox x:Name="TxtSearch" 
-                 Width="250" 
-                 VerticalAlignment="Center" 
-                 Margin="0,0,20,0"
-                 Padding="5"
-                 TextChanged="TxtSearch_TextChanged" />
-                <Button x:Name="BtnAdd"
-                        Content="إضافة مزارع"
-                        Style="{StaticResource PrimaryButton}"
-                        Margin="0,0,8,0"
-                        Padding="12,4"
-                        Click="BtnAdd_Click"/>
-
-                <Button x:Name="BtnEdit"
-                        Content="تعديل"
-                        Style="{StaticResource SecondaryButton}"
-                        Margin="0,0,8,0"
-                        Click="BtnEdit_Click"/>
-
-                <Button x:Name="BtnDelete"
-                        Content="حذف"
-                        Style="{StaticResource SecondaryButton}"
-                        Foreground="{StaticResource DangerBrush}"
-                        Click="BtnDelete_Click"/>
-            </StackPanel>
-
-            <!-- نموذج الإضافة / التعديل -->
-            <Border x:Name="FormPanel"
-                    Visibility="Collapsed"
-                    Background="{StaticResource CardBrush}"
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="8"
-                    Padding="20"
-                    Effect="{StaticResource CardShadow}">
-
-                <StackPanel Orientation="Horizontal">
-
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-
-                        <TextBlock Text="الاسم:" Margin="0,0,8,0"/>
-                        <TextBox x:Name="TxtName" Width="220" Margin="0,0,20,0"/>
-
-                        <TextBlock Text="الهاتف:" Margin="0,0,8,0"/>
-                        <TextBox x:Name="TxtPhone" Width="160" Margin="0,0,20,0"/>
-
-                        <TextBlock Text="الرصيد:" Margin="0,0,8,0"/>
-                        <TextBox x:Name="TxtBalance" Width="120"/>
-                    </StackPanel>
-
-                    <Button Content="حفظ"
-                            Style="{StaticResource PrimaryButton}"
-                            Width="100"
-                            Margin="16,0,0,0"
-                            Click="BtnSave_Click"/>
-
-                    <Button Content="إلغاء"
-                            Style="{StaticResource SecondaryButton}"
-                            Width="90"
-                            Margin="8,0,0,0"
-                            Click="BtnCancel_Click"/>
-                </StackPanel>
-            </Border>
+        <StackPanel Grid.Row="0" Margin="30,25,30,20">
+            <TextBlock Text="سجل المزارعين" FontSize="32" FontWeight="Black" Foreground="#1A202C" />
+            <TextBlock Text="إدارة بيانات المزارعين ومتابعة الأرصدة الحالية" FontSize="14" Foreground="#718096" Margin="0,5,0,0"/>
         </StackPanel>
 
-        <!-- الجدول -->
-        <Border Grid.Row="2"
-                Background="{StaticResource CardBrush}"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="1"
-                CornerRadius="8"
-                Padding="12"
-                Effect="{StaticResource CardShadow}">
+        <Border Grid.Row="1" Background="White" Margin="30,0,30,20" Padding="15" CornerRadius="12">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" Opacity="0.05" ShadowDepth="2"/>
+            </Border.Effect>
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Border Background="#F7FAFC" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1" Width="400" Height="45">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="🔍" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#A0AEC0" FontSize="16"/>
+                            <TextBox x:Name="TxtSearch" Grid.Column="1" Background="Transparent" BorderThickness="0" 
+                                     VerticalContentAlignment="Center" FontSize="16" Foreground="#2D3748" 
+                                     Padding="5,0" TextChanged="TxtSearch_TextChanged"
+                                     Tag="ابحث بالاسم أو برقم الهاتف..."/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
 
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button x:Name="BtnAdd" Content="➕ مزارع جديد" Cursor="Hand"
+                            Style="{StaticResource PrimaryButton}" FontSize="16" FontWeight="Bold" Padding="20,0" Height="45"
+                            Click="BtnAdd_Click" Margin="0,0,10,0"/>
+                    
+                    <Button x:Name="BtnEdit" Content="📝 تعديل" Cursor="Hand"
+                            FontSize="16" FontWeight="Bold" Width="100" Height="45"
+                            Style="{StaticResource SecondaryButton}" Click="BtnEdit_Click" Margin="0,0,10,0"/>
+                    
+                    <Button x:Name="BtnDelete" Content="🗑️ حذف" Cursor="Hand"
+                            FontSize="16" FontWeight="Bold" Width="100" Height="45"
+                            Style="{StaticResource SecondaryButton}" Foreground="#E53E3E" Click="BtnDelete_Click"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Border x:Name="FormPanel" Grid.Row="2" Visibility="Collapsed"
+                Background="White" BorderBrush="#3182CE" BorderThickness="0,4,0,0" 
+                CornerRadius="12" Padding="25" Margin="30,0,30,20">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="25" ShadowDepth="5" Opacity="0.1"/>
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock Text="تفاصيل بيانات المزارع" FontSize="20" FontWeight="Black" Margin="0,0,0,20" Foreground="#2D3748"/>
+                <UniformGrid Columns="3">
+                    <StackPanel Margin="0,0,15,0">
+                        <TextBlock Text="الاسم بالكامل" FontSize="14" FontWeight="Bold" Margin="0,0,0,8" Foreground="#4A5568"/>
+                        <Border Background="#F7FAFC" CornerRadius="6" BorderBrush="#E2E8F0" BorderThickness="1">
+                            <TextBox x:Name="TxtName" Height="42" Background="Transparent" BorderThickness="0" FontSize="16" Padding="10,0" VerticalContentAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Margin="0,0,15,0">
+                        <TextBlock Text="رقم الهاتف" FontSize="14" FontWeight="Bold" Margin="0,0,0,8" Foreground="#4A5568"/>
+                        <Border Background="#F7FAFC" CornerRadius="6" BorderBrush="#E2E8F0" BorderThickness="1">
+                            <TextBox x:Name="TxtPhone" Height="42" Background="Transparent" BorderThickness="0" FontSize="16" Padding="10,0" VerticalContentAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="الرصيد الافتتاحي" FontSize="14" FontWeight="Bold" Margin="0,0,0,8" Foreground="#4A5568"/>
+                        <Border Background="#F7FAFC" CornerRadius="6" BorderBrush="#E2E8F0" BorderThickness="1">
+                            <TextBox x:Name="TxtBalance" Height="42" Background="Transparent" BorderThickness="0" FontSize="16" Padding="10,0" VerticalContentAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </UniformGrid>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,25,0,0">
+                    <Button Content="حفظ البيانات" Width="140" Height="45" FontSize="16" FontWeight="Bold"
+                            Style="{StaticResource PrimaryButton}" Click="BtnSave_Click" Margin="0,0,12,0"/>
+                    <Button Content="إلغاء" Width="90" Height="45" FontSize="16" FontWeight="Bold"
+                            Style="{StaticResource SecondaryButton}" Click="BtnCancel_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3" Background="White" Margin="30,0,30,30" CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1" ClipToBounds="True">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" Opacity="0.05" ShadowDepth="2"/>
+            </Border.Effect>
+            
             <DataGrid x:Name="FarmersGrid"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
-                      SelectionMode="Single"
                       HeadersVisibility="Column"
-                      RowHeight="40"
-                      FontSize="14"
-                      GridLinesVisibility="Horizontal"
-                      CanUserAddRows="False">
+                      GridLinesVisibility="None"
+                      RowHeight="65"
+                      FontSize="16"
+                      Background="Transparent"
+                      BorderThickness="0"
+                      CanUserAddRows="False"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow">
+
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#F8F9FB"/>
+                        <Setter Property="Foreground" Value="#4A5568"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="Padding" Value="20,15"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Margin" Value="0,2"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#EDF2F7"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#EBF8FF"/>
+                                <Setter Property="Foreground" Value="#2B6CB0"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="*"/>
-                    <DataGridTextColumn Header="الهاتف" Binding="{Binding Phone}" Width="140"/>
-                    <DataGridTextColumn Header="الرصيد"
-                                        Binding="{Binding CurrentBalance, StringFormat=N2}"
-                                        Width="160"/>
-                </DataGrid.Columns>
+                    <DataGridTemplateColumn Header="اسم المزارع" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="20,0">
+                                    <Border Width="35" Height="35" CornerRadius="17.5" Background="#E3F2FD" Margin="0,0,12,0">
+                                        <TextBlock Text="👤" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#2D3748"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
+                    <DataGridTextColumn Header="رقم الهاتف" Binding="{Binding Phone}" Width="250">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Margin" Value="20,0"/>
+                                <Setter Property="Foreground" Value="#4A5568"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <DataGridTemplateColumn Header="الرصيد الحالي" Width="200">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Background="#F0FFF4" CornerRadius="6" Padding="12,6" HorizontalAlignment="Left" Margin="20,0">
+                                    <TextBlock Text="{Binding CurrentBalance, StringFormat={}{0:N2} ج.م}" 
+                                               FontWeight="Black" Foreground="#2F855A" VerticalAlignment="Center"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
             </DataGrid>
         </Border>
     </Grid>
