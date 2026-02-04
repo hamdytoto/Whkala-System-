@@ -74,10 +74,14 @@ CREATE TABLE IF NOT EXISTS Sales (
     PaymentType TEXT NOT NULL, -- Cash / Credit
     SaleDate TEXT NOT NULL,
     Notes TEXT,
+    GrossWeight REAL NOT NULL,
+    NetWeight REAL NOT NULL,
+    TareWeight REAL NOT NULL,
     FOREIGN KEY (FarmerId) REFERENCES Farmers(Id),
     FOREIGN KEY (TraderId) REFERENCES Traders(Id),
     FOREIGN KEY (ProductId) REFERENCES Products(Id)
 );
+
 
 -- مدفوعات للمزارعين (تسديد مستحقات)
 CREATE TABLE IF NOT EXISTS FarmerPayments (
@@ -114,4 +118,6 @@ INSERT OR IGNORE INTO Settings (Key, Value) VALUES ('CommissionRate', '0.05'); -
 -- مستخدم مدير افتراضي (كلمة السر: admin)
 INSERT OR IGNORE INTO Users (Id, Username, PasswordHash, FullName, Role, IsActive)
 VALUES (1, 'admin', 'admin', 'مدير النظام', 'Admin', 1);
+
+
 

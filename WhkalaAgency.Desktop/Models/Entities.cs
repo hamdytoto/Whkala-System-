@@ -55,6 +55,9 @@ public class Sale
     public string PaymentType { get; set; } = "Cash"; // Cash / Credit
     public DateTime SaleDate { get; set; }
     public string? Notes { get; set; }
+    public double GrossWeight { get; set; }
+    public double TareWeight { get; set; }
+    public double NetWeight { get; set; }
 }
 
 public class FarmerPayment

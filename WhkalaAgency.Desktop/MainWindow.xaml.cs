@@ -63,7 +63,7 @@ public partial class MainWindow : Window
 
     private void Sale_Click(object sender, RoutedEventArgs e)
     {
-        MainContent.Content = new SalePage();
+        MainContent.Content = new SalesPage();
     }
 
     private void Reports_Click(object sender, RoutedEventArgs e)

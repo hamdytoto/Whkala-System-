@@ -1,13 +1,107 @@
-<UserControl x:Class="WhkalaAgency.Desktop.Views.SalePage"
+<UserControl x:Class="WhkalaAgency.Desktop.Views.SalesPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              FlowDirection="RightToLeft">
-    <Grid>
-        <TextBlock Text="تسجيل البيع (تحت التطوير)"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="20"
-                   FontWeight="Bold"/>
+    <Grid Background="#F4F7FA">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="White" Padding="20,10" Margin="0,0,0,10" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+            <DockPanel>
+                <StackPanel>
+                    <TextBlock Text="فاتورة مبيعات مجمعة" FontSize="24" FontWeight="Black" Foreground="#2D3748"/>
+                    <TextBlock Text="إضافة أصناف متعددة للتاجر وتوزيع المستحقات على المزارعين" Foreground="#718096"/>
+                </StackPanel>
+                <DatePicker x:Name="DtSaleDate" HorizontalAlignment="Right" VerticalAlignment="Center" Width="150" Height="35"/>
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Row="1" Background="White" Margin="15,0,15,10" CornerRadius="8" Padding="15" BorderBrush="#E2E8F0" BorderThickness="1">
+            <StackPanel>
+                <UniformGrid Columns="3" Margin="0,0,0,10">
+                    <StackPanel Margin="5">
+                        <TextBlock Text="التاجر (المشتري)" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="CboTraders" DisplayMemberPath="Name" SelectedValuePath="Id" Height="38"/>
+                    </StackPanel>
+                    <StackPanel Margin="5">
+                        <TextBlock Text="المزارع (المورد)" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="CboFarmers" DisplayMemberPath="Name" SelectedValuePath="Id" Height="38"/>
+                    </StackPanel>
+                    <StackPanel Margin="5">
+                        <TextBlock Text="الصنف" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="CboProducts" DisplayMemberPath="Name" SelectedValuePath="Id" Height="38"/>
+                    </StackPanel>
+                </UniformGrid>
+
+                <UniformGrid Columns="5" Margin="0,0,0,10">
+                    <StackPanel Margin="5">
+                        <TextBlock Text="العدد (الكمية)" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtQuantity" Height="38"/>
+                    </StackPanel>
+                    <StackPanel Margin="5">
+                        <TextBlock Text="الوزن القائم" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtGrossWeight" Height="38" TextChanged="CalculateWeights"/>
+                    </StackPanel>
+                    <StackPanel Margin="5">
+                        <TextBlock Text="وزن الفارغ" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtTareWeight" Height="38" TextChanged="CalculateWeights"/>
+                    </StackPanel>
+                    <StackPanel Margin="5">
+                        <TextBlock Text="الصافي" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtNetWeight" Height="38" IsReadOnly="True" Background="#F7FAFC"/>
+                    </StackPanel>
+                    <StackPanel Margin="5">
+                        <TextBlock Text="سعر الوحدة" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtPrice" Height="38"/>
+                    </StackPanel>
+                    <Button Content="إضافة صنف +" Click="BtnAddToBasket_Click" Background="#3182CE" Foreground="White" Height="38" Margin="5,22,5,0" FontWeight="Bold"/>
+                </UniformGrid>
+
+                <Separator Margin="0,10" Background="#EDF2F7"/>
+
+                <TextBlock Text="الأصناف المدرجة في الفاتورة:" FontWeight="Bold" Margin="5,0,0,5"/>
+                <DataGrid x:Name="BasketGrid" AutoGenerateColumns="False" Height="150" Margin="5" Background="White" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="المزارع" Binding="{Binding FarmerName}" Width="*"/>
+                        <DataGridTextColumn Header="الصنف" Binding="{Binding ProductName}" Width="*"/>
+                        <DataGridTextColumn Header="الصافي" Binding="{Binding NetWeight}" Width="80"/>
+                        <DataGridTextColumn Header="السعر" Binding="{Binding Price}" Width="80"/>
+                        <DataGridTextColumn Header="الإجمالي" Binding="{Binding Total, StringFormat={}{0:N2}}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Grid Margin="5,10">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <TextBlock Text="طريقة الدفع:" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="CboPaymentType" Width="120" Height="38" SelectedIndex="0">
+                            <ComboBoxItem Content="نقدي (Cash)" Tag="Cash"/>
+                            <ComboBoxItem Content="آجل (Credit)" Tag="Credit"/>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="الإجمالي المستحق:" FontSize="16" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="LblGrandTotal" Text="0.00 ج.م" FontSize="24" FontWeight="Black" Foreground="#2C7A7B" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                        <Button Content="حفظ وترحيل الفاتورة" Click="BtnSaveSale_Click" Width="200" Height="45" Background="#2F855A" Foreground="White" FontWeight="Bold"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="2" Background="White" Margin="15,0,15,15" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1">
+            <DataGrid x:Name="SalesGrid" AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="None">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="التاريخ" Binding="{Binding SaleDate, StringFormat=yyyy/MM/dd}" Width="100"/>
+                    <DataGridTextColumn Header="التاجر" Binding="{Binding TraderName}" Width="*"/>
+                    <DataGridTextColumn Header="المزارع" Binding="{Binding FarmerName}" Width="*"/>
+                    <DataGridTextColumn Header="الصنف" Binding="{Binding ProductName}" Width="100"/>
+                    <DataGridTextColumn Header="الصافي" Binding="{Binding NetWeight}" Width="80"/>
+                    <DataGridTextColumn Header="الإجمالي" Binding="{Binding TotalAmount, StringFormat={}{0:N2}}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
     </Grid>
 </UserControl>
-
