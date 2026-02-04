@@ -24,6 +24,13 @@
         <StackPanel Grid.Row="1" Margin="0,0,0,12">
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="بحث باسم المزارع أو الهاتف:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="DimGray"/>
+                <TextBox x:Name="TxtSearch" 
+                 Width="250" 
+                 VerticalAlignment="Center" 
+                 Margin="0,0,20,0"
+                 Padding="5"
+                 TextChanged="TxtSearch_TextChanged" />
                 <Button x:Name="BtnAdd"
                         Content="إضافة مزارع"
                         Style="{StaticResource PrimaryButton}"

@@ -7,12 +7,15 @@ using System.Windows.Controls;
 using Microsoft.Data.Sqlite;
 using WhkalaAgency.Desktop.Data;
 using WhkalaAgency.Desktop.Models;
+using System.ComponentModel; // ضروري للـ ICollectionView
+using System.Windows.Data;   // ضروري للـ CollectionViewSource
 
 namespace WhkalaAgency.Desktop.Views;
 
 public partial class FarmersPage : UserControl
 {
     private int? _editingId;
+    private ICollectionView? _farmersView;
 
     public FarmersPage()
     {
@@ -20,10 +23,9 @@ public partial class FarmersPage : UserControl
         Loaded += (_, _) => LoadFarmers();
     }
 
-    private void LoadFarmers()
+private void LoadFarmers()
 {
     var list = new List<Farmer>();
-
     try
     {
         var table = DatabaseService.ExecuteDataTable(
@@ -37,19 +39,41 @@ public partial class FarmersPage : UserControl
                 Name = row["Name"]?.ToString() ?? "",
                 Phone = row["Phone"] == DBNull.Value ? null : row["Phone"].ToString(),
                 CurrentBalance = Convert.ToDouble(row["CurrentBalance"]),
-                CreatedAt = row["CreatedAt"] == DBNull.Value
-                    ? DateTime.Now
-                    : Convert.ToDateTime(row["CreatedAt"])
+                CreatedAt = row["CreatedAt"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(row["CreatedAt"])
             });
         }
+
+        // 1. إنشاء الـ View من القائمة
+        _farmersView = CollectionViewSource.GetDefaultView(list);
+
+        // 2. تحديد دالة الفلترة التي سنكتبها في الخطوة التالية
+        _farmersView.Filter = FilterFarmers;
+
+        // 3. ربط الـ DataGrid بالـ View
+        FarmersGrid.ItemsSource = _farmersView;
     }
     catch (Exception ex)
     {
         MessageBox.Show(ex.Message, "LoadFarmers Error");
     }
+}
 
-    FarmersGrid.ItemsSource = null;   // مهم
-    FarmersGrid.ItemsSource = list;
+private bool FilterFarmers(object obj)
+{
+    // إذا كان المربع فارغاً، اظهر كل البيانات
+    if (string.IsNullOrWhiteSpace(TxtSearch.Text))
+        return true;
+
+    var farmer = obj as Farmer;
+    if (farmer == null) return false;
+
+    string query = TxtSearch.Text.Trim().ToLower();
+
+    // اظهر السطر إذا كان الاسم يحتوي على نص البحث OR الهاتف يحتوي على نص البحث
+    bool nameMatch = farmer.Name.ToLower().Contains(query);
+    bool phoneMatch = farmer.Phone != null && farmer.Phone.Contains(query);
+
+    return nameMatch || phoneMatch;
 }
 
     private void ShowForm(bool show, int? editId = null)
@@ -174,4 +198,9 @@ public partial class FarmersPage : UserControl
     {
         // يمكن استخدامه لتفعيل/تعطيل أزرار التعديل والحذف حسب الاختيار
     }
+    private void TxtSearch_TextChanged(object sender, TextChangedEventArgs e)
+{
+    // إعادة تنشيط الفلتر بناءً على النص الجديد
+    _farmersView?.Refresh();
+}
 }
