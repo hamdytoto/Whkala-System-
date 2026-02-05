@@ -30,34 +30,32 @@ public class Product
     public double CurrentStock { get; set; }
 }
 
+// رأس إذن التوريد
 public class Supply
 {
     public int Id { get; set; }
     public int FarmerId { get; set; }
-    public int ProductId { get; set; }
-    public double Quantity { get; set; }
-    public double ExpectedPricePerUnit { get; set; }
     public DateTime SupplyDate { get; set; }
+    public string BatchNumber { get; set; } = string.Empty;
     public string? Notes { get; set; }
-}
 
-public class Sale
+    // خاصية إضافية لو حبيت تشيل قائمة الأصناف جوه الإذن (اختياري)
+    //public List<SupplyItem> Items { get; set; } = new();
+}
+// تفاصيل أصناف إذن التوريد
+public class SupplyItem
 {
     public int Id { get; set; }
-    public int FarmerId { get; set; }
-    public int TraderId { get; set; }
+    public int SupplyId { get; set; }
     public int ProductId { get; set; }
     public double Quantity { get; set; }
-    public double PricePerUnit { get; set; }
-    public double TotalAmount { get; set; }
-    public double CommissionAmount { get; set; }
-    public double FarmerNetAmount { get; set; }
-    public string PaymentType { get; set; } = "Cash"; // Cash / Credit
-    public DateTime SaleDate { get; set; }
-    public string? Notes { get; set; }
     public double GrossWeight { get; set; }
     public double TareWeight { get; set; }
     public double NetWeight { get; set; }
+    public double ExpectedPricePerUnit { get; set; }
+    public double TotalPrice { get; set; }
+    public double CommissionAmount { get; set; }
+    public double FarmerNetAmount { get; set; }
 }
 
 public class FarmerPayment

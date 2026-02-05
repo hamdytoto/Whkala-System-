@@ -21,7 +21,7 @@ public static class DatabaseService
     private static readonly string SchemaPath =
         Path.Combine(BaseDirectory, "Schema.sql");
 
-    private static readonly string ConnectionString =
+    public static readonly string ConnectionString =
         $"Data Source={DbPath}";
 
     public static void Initialize()

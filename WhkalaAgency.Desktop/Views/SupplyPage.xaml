@@ -2,12 +2,130 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              FlowDirection="RightToLeft">
-    <Grid>
-        <TextBlock Text="تسجيل التوريد (تحت التطوير)"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="20"
-                   FontWeight="Bold"/>
-    </Grid>
-</UserControl>
+	<Grid Background="#F0F2F5">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
 
+		<Border Grid.Row="0" Background="#1A365D" Padding="20,10">
+			<DockPanel>
+				<StackPanel>
+					<TextBlock Text="إدارة استلام التوريدات" FontSize="22" FontWeight="Bold" Foreground="White"/>
+					<TextBlock Text="نظام الإذن المتعدد - تسجيل مالي وتخزيني" Foreground="#A0AEC0"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+					<DatePicker x:Name="DtSupplyDate" Width="150" Height="35" VerticalAlignment="Center"/>
+				</StackPanel>
+			</DockPanel>
+		</Border>
+
+		<Grid Grid.Row="1" Margin="15,10">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="350"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+
+			<Border Grid.Column="0" Background="White" CornerRadius="10" Padding="15" Margin="0,0,10,0" BorderBrush="#E2E8F0" BorderThickness="1">
+				<StackPanel>
+					<TextBlock Text="بيانات الصنف المورد" FontWeight="Bold" Foreground="#2D3748" Margin="0,0,0,10"/>
+
+					<TextBlock Text="المزارع (صاحب البضاعة)" Margin="0,5,0,0" FontSize="11" Foreground="#718096"/>
+					<ComboBox x:Name="CboFarmers" DisplayMemberPath="Name" SelectedValuePath="Id" Height="35" Margin="0,5,0,10"/>
+
+					<TextBlock Text="الصنف" Margin="0,5,0,0" FontSize="11" Foreground="#718096"/>
+					<ComboBox x:Name="CboProducts" DisplayMemberPath="Name" SelectedValuePath="Id" Height="35" Margin="0,5,0,10"/>
+
+					<UniformGrid Columns="2">
+						<StackPanel Margin="0,0,5,0">
+							<TextBlock Text="العدد (عبوة/شكارة)"/>
+							<TextBox x:Name="TxtQty" Height="35" Margin="0,5"/>
+						</StackPanel>
+						<StackPanel Margin="5,0,0,0">
+							<TextBlock Text="السعر المتوقع"/>
+							<TextBox x:Name="TxtExpectedPrice" Height="35" Margin="0,5"/>
+						</StackPanel>
+					</UniformGrid>
+
+					<UniformGrid Columns="3" Margin="0,5">
+						<StackPanel Margin="2">
+							<TextBlock Text="الوزن القائم"/>
+							<TextBox x:Name="TxtGrossWeight" Height="35" TextChanged="CalculateWeights"/>
+						</StackPanel>
+						<StackPanel Margin="2">
+							<TextBlock Text="الفارغ"/>
+							<TextBox x:Name="TxtTareWeight" Height="35" TextChanged="CalculateWeights"/>
+						</StackPanel>
+						<StackPanel Margin="2">
+							<TextBlock Text="الصافي"/>
+							<TextBox x:Name="TxtNetWeight" Height="35" IsReadOnly="True" Background="#EDF2F7" FontWeight="Bold"/>
+						</StackPanel>
+					</UniformGrid>
+
+					<Button Content="إضافة للصنف الحالي +" Click="BtnAddToBasket_Click" Background="#3182CE" Foreground="White" Height="40" FontWeight="Bold" Margin="0,10,0,0">
+						<Button.Resources>
+							<Style TargetType="Border">
+								<Setter Property="CornerRadius" Value="5"/>
+							</Style>
+						</Button.Resources>
+					</Button>
+				</StackPanel>
+			</Border>
+
+			<Border Grid.Column="1" Background="White" CornerRadius="10" Padding="15">
+				<DockPanel LastChildFill="True">
+					<TextBlock DockPanel.Dock="Top" Text="الأصناف المدرجة في هذا الإذن:" FontWeight="Bold" Margin="0,0,0,10"/>
+					<Button DockPanel.Dock="Bottom" Content="تأكيد وحفظ إذن التوريد" Click="BtnSaveAndPrint_Click" Background="#2F855A" Foreground="White" Height="45" FontWeight="Bold" Margin="0,10,0,0"/>
+
+					<DataGrid x:Name="BasketGrid" AutoGenerateColumns="False" Background="Transparent" BorderThickness="1" BorderBrush="#EDF2F7" CanUserAddRows="False">
+						<DataGrid.Columns>
+							<DataGridTextColumn Header="الصنف" Binding="{Binding ProductName}" Width="*"/>
+							<DataGridTextColumn Header="العدد" Binding="{Binding Quantity}" Width="50"/>
+							<DataGridTextColumn Header="الصافي" Binding="{Binding NetWeight}" Width="60"/>
+							<DataGridTextColumn Header="السعر" Binding="{Binding ExpectedPrice}" Width="60"/>
+							<DataGridTextColumn Header="صافي المزارع" Binding="{Binding NetToFarmer, StringFormat={}{0:N2}}" Width="100">
+								<DataGridTextColumn.ElementStyle>
+									<Style TargetType="TextBlock">
+										<Setter Property="FontWeight" Value="Bold"/>
+										<Setter Property="Foreground" Value="Green"/>
+									</Style>
+								</DataGridTextColumn.ElementStyle>
+							</DataGridTextColumn>
+							<DataGridTemplateColumn Width="50">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Button Content="حذف" Foreground="Red" Background="Transparent" BorderThickness="0" Click="RemoveFromBasket_Click" FontSize="10"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+						</DataGrid.Columns>
+					</DataGrid>
+				</DockPanel>
+			</Border>
+		</Grid>
+
+		<Border Grid.Row="2" Background="White" Margin="15,0,15,15" CornerRadius="10" Padding="15">
+			<DockPanel LastChildFill="True">
+				<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+					<TextBlock Text="بحث برقم الإذن:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+					<TextBox x:Name="TxtSearch" Width="180" Height="30" TextChanged="FilterHistory_Changed"/>
+					<TextBlock Text="المزارع:" VerticalAlignment="Center" Margin="20,0,10,0"/>
+					<ComboBox x:Name="CboFilterFarmer" Width="150" Height="30" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="FilterHistory_Changed"/>
+				</StackPanel>
+
+				<DataGrid x:Name="SuppliesGrid" AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="Horizontal" AlternatingRowBackground="#F7FAFC">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="رقم الإذن" Binding="{Binding BatchNumber}" Width="130"/>
+						<DataGridTextColumn Header="التاريخ" Binding="{Binding SupplyDate}" Width="100"/>
+						<DataGridTextColumn Header="المزارع" Binding="{Binding FarmerName}" Width="*"/>
+						<DataGridTextColumn Header="الصنف" Binding="{Binding ProductName}" Width="*"/>
+						<DataGridTextColumn Header="العدد" Binding="{Binding Quantity}" Width="60"/>
+						<DataGridTextColumn Header="الوزن الصافي" Binding="{Binding NetWeight}" Width="80"/>
+						<DataGridTextColumn Header="صافي القيمة" Binding="{Binding Total, StringFormat={}{0:N2}}" Width="100"/>
+					</DataGrid.Columns>
+				</DataGrid>
+			</DockPanel>
+		</Border>
+	</Grid>
+</UserControl>
