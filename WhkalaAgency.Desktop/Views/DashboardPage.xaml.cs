@@ -38,56 +38,52 @@ public partial class DashboardPage : UserControl
         {
             using var connection = DatabaseService.GetConnection();
 
-            // مبيعات اليوم
+            // 1. مبيعات اليوم (باقية كما هي لأن الإجمالي موجود في رأس الفاتورة)
             using (var cmd = connection.CreateCommand())
             {
-                cmd.CommandText = @"
-SELECT IFNULL(SUM(TotalAmount), 0)
-FROM Sales
-WHERE SaleDate >= $start AND SaleDate < $end;";
+                cmd.CommandText = "SELECT IFNULL(SUM(TotalAmount), 0) FROM Sales WHERE SaleDate >= $start AND SaleDate < $end;";
                 cmd.Parameters.Add(new SqliteParameter("$start", start));
                 cmd.Parameters.Add(new SqliteParameter("$end", end));
                 TodaySalesText.Text = SafeScalarDouble(cmd.ExecuteScalar()).ToString("N2");
             }
 
-            // عمولة اليوم
+            // 2. عمولة اليوم (تعديل: السحب من SaleItems المرتبط بـ Sales اليوم)
             using (var cmd = connection.CreateCommand())
             {
                 cmd.CommandText = @"
-SELECT IFNULL(SUM(CommissionAmount), 0)
-FROM Sales
-WHERE SaleDate >= $start AND SaleDate < $end;";
+                SELECT IFNULL(SUM(si.CommissionAmount), 0)
+                FROM SaleItems si
+                JOIN Sales s ON si.SaleId = s.Id
+                WHERE s.SaleDate >= $start AND s.SaleDate < $end;";
                 cmd.Parameters.Add(new SqliteParameter("$start", start));
                 cmd.Parameters.Add(new SqliteParameter("$end", end));
                 TodayCommissionText.Text = SafeScalarDouble(cmd.ExecuteScalar()).ToString("N2");
             }
 
-            // مديونيات التجار
+            // 3. مديونيات التجار (باقية كما هي)
             using (var cmd = connection.CreateCommand())
             {
                 cmd.CommandText = "SELECT IFNULL(SUM(CurrentBalance), 0) FROM Traders;";
                 TotalTraderDebtsText.Text = SafeScalarDouble(cmd.ExecuteScalar()).ToString("N2");
             }
 
-            // إجمالي المخزون
+            // 4. إجمالي المخزون (باقية كما هي)
             using (var cmd = connection.CreateCommand())
             {
                 cmd.CommandText = "SELECT IFNULL(SUM(CurrentStock), 0) FROM Products;";
                 TotalStockText.Text = SafeScalarDouble(cmd.ExecuteScalar()).ToString("N2");
             }
         }
-        catch
+        catch (Exception ex)
         {
-            TodaySalesText.Text = "0.00";
-            TodayCommissionText.Text = "0.00";
-            TotalTraderDebtsText.Text = "0.00";
-            TotalStockText.Text = "0.00";
+            MessageBox.Show("حدث خطأ أثناء تحميل البيانات. يرجى المحاولة لاحقًا.", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+            //ResetDisplay();
+
         }
     }
 
     private void LoadChartsData()
     {
-        // آخر 7 أيام (من اليوم - 6 إلى اليوم)
         var days = new List<DateTime>();
         for (var i = 6; i >= 0; i--)
             days.Add(DateTime.Today.AddDays(-i));
@@ -96,18 +92,25 @@ WHERE SaleDate >= $start AND SaleDate < $end;";
         var commissionValues = new double[7];
 
         var startDate = days[0].ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-        var endDate = days[6].ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        var endDate = days[6].ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + " 23:59:59";
 
         try
         {
             using var connection = DatabaseService.GetConnection();
             using var cmd = connection.CreateCommand();
+
+            // التعديل: تجميع العمولات من جدول التفاصيل مع ربطها بتاريخ الفاتورة
             cmd.CommandText = @"
-SELECT date(SaleDate) as d, SUM(TotalAmount), SUM(CommissionAmount)
-FROM Sales
-WHERE date(SaleDate) >= $start AND date(SaleDate) <= $end
-GROUP BY date(SaleDate)
-ORDER BY d;";
+            SELECT 
+                date(s.SaleDate) as d, 
+                SUM(DISTINCT s.TotalAmount) as TotalSales, 
+                SUM(si.CommissionAmount) as TotalComm
+            FROM Sales s
+            LEFT JOIN SaleItems si ON s.Id = si.SaleId
+            WHERE s.SaleDate >= $start AND s.SaleDate <= $end
+            GROUP BY date(s.SaleDate)
+            ORDER BY d;";
+
             cmd.Parameters.Add(new SqliteParameter("$start", startDate));
             cmd.Parameters.Add(new SqliteParameter("$end", endDate));
 
@@ -119,15 +122,14 @@ ORDER BY d;";
             while (reader.Read())
             {
                 var d = reader.GetString(0);
-                if (!dateIndex.TryGetValue(d, out var idx)) continue;
-                salesValues[idx] = SafeScalarDouble(reader.GetValue(1));
-                commissionValues[idx] = SafeScalarDouble(reader.GetValue(2));
+                if (dateIndex.TryGetValue(d, out var idx))
+                {
+                    salesValues[idx] = SafeScalarDouble(reader.GetValue(1));
+                    commissionValues[idx] = SafeScalarDouble(reader.GetValue(2));
+                }
             }
         }
-        catch
-        {
-            // leave zeros
-        }
+        catch { /* التعامل مع الخطأ */ }
 
         PaintBarChart(SalesChartHost, salesValues, new SolidColorBrush(Color.FromRgb(46, 134, 222)));
         PaintBarChart(CommissionChartHost, commissionValues, new SolidColorBrush(Color.FromRgb(231, 76, 60)));

@@ -153,12 +153,7 @@
 
                 <ScrollViewer VerticalScrollBarVisibility="Hidden">
                     <StackPanel>
-                        <TextBlock Text="القائمة الرئيسية"
-                                FontSize="11"
-                                FontWeight="Bold"
-                                Foreground="#A0AEC0"
-                                Margin="30,0,0,15"
-                                HorizontalAlignment="Right"/>
+                       
 
                         <RadioButton Content="لوحة التحكم"
                                 Tag=""
@@ -166,12 +161,7 @@
                                 Style="{StaticResource NavButtonStyle}"
                                 Click="Dashboard_Click"/>
 
-                        <TextBlock Text="إدارة البيانات"
-                                FontSize="11"
-                                FontWeight="Bold"
-                                Foreground="#A0AEC0"
-                                Margin="30,25,0,15"
-                                HorizontalAlignment="Right"/>
+                      
                         <RadioButton Content="الأصناف والمنتجات"
                                 Tag=""
                                 Style="{StaticResource NavButtonStyle}"
@@ -185,12 +175,7 @@
                                 Style="{StaticResource NavButtonStyle}"
                                 Click="Traders_Click"/>
 
-                        <TextBlock Text="العمليات المالية"
-                                FontSize="11"
-                                FontWeight="Bold"
-                                Foreground="#A0AEC0"
-                                Margin="30,25,0,15"
-                                HorizontalAlignment="Right"/>
+                
                         <RadioButton Content="توريد محاصيل"
                                 Tag=""
                                 Style="{StaticResource NavButtonStyle}"
@@ -200,12 +185,7 @@
                                 Style="{StaticResource NavButtonStyle}"
                                 Click="Sale_Click"/>
 
-                        <TextBlock Text="الأمان"
-                                FontSize="11"
-                                FontWeight="Bold"
-                                Foreground="#A0AEC0"
-                                Margin="30,25,0,15"
-                                HorizontalAlignment="Right"/>
+                       
                         <RadioButton x:Name="UsersButton"
                                 Content="إدارة المستخدمين"
                                 Tag=""

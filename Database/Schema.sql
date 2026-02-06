@@ -47,41 +47,62 @@ CREATE TABLE IF NOT EXISTS Products (
     CurrentStock REAL NOT NULL DEFAULT 0
 );
 
--- جدول التوريدات (دخول البضاعة من المزارعين)
+-- 1. جدول رأس الإذن (بيانات المزارع والتاريخ)
+
 CREATE TABLE IF NOT EXISTS Supplies (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     FarmerId INTEGER NOT NULL,
-    ProductId INTEGER NOT NULL,
-    Quantity REAL NOT NULL,
-    ExpectedPricePerUnit REAL NOT NULL,
     SupplyDate TEXT NOT NULL,
+    BatchNumber TEXT NOT NULL UNIQUE,
     Notes TEXT,
-    FOREIGN KEY (FarmerId) REFERENCES Farmers(Id),
-    FOREIGN KEY (ProductId) REFERENCES Products(Id)
+    FOREIGN KEY (FarmerId) REFERENCES Farmers(Id)
 );
 
--- جدول المبيعات
-CREATE TABLE IF NOT EXISTS Sales (
+-- 2. جدول تفاصيل الإذن (الأصناف والأوزان والمبالغ)
+CREATE TABLE IF NOT EXISTS SupplyItems (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-    FarmerId INTEGER NOT NULL,
-    TraderId INTEGER NOT NULL,
+    SupplyId INTEGER NOT NULL,
     ProductId INTEGER NOT NULL,
     Quantity REAL NOT NULL,
+    GrossWeight REAL NOT NULL,
+    NetWeight REAL NOT NULL,
+    TareWeight REAL NOT NULL,
+    ExpectedPricePerUnit REAL NOT NULL,
+    TotalPrice REAL NOT NULL, -- (NetWeight * Price)
+    CommissionAmount REAL NOT NULL, -- (TotalPrice * 0.05)
+    FarmerNetAmount REAL NOT NULL, -- (TotalPrice - Commission)
+    FOREIGN KEY (SupplyId) REFERENCES Supplies(Id) ON DELETE CASCADE,
+    FOREIGN KEY (ProductId) REFERENCES Products(Id)
+);
+-- جدول رأس فاتورة البيع
+CREATE TABLE IF NOT EXISTS Sales (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    TraderId INTEGER NOT NULL,
+    SaleDate TEXT NOT NULL,
+    TotalAmount REAL NOT NULL,
+    PaymentType TEXT NOT NULL, -- Cash / Credit
+    Notes TEXT,
+    FOREIGN KEY (TraderId) REFERENCES Traders(Id)
+);
+
+-- جدول تفاصيل فاتورة البيع
+CREATE TABLE IF NOT EXISTS SaleItems (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    SaleId INTEGER NOT NULL,
+    FarmerId INTEGER NOT NULL,
+    ProductId INTEGER NOT NULL,
+    Quantity REAL NOT NULL,
+    GrossWeight REAL NOT NULL,
+    TareWeight REAL NOT NULL,
+    NetWeight REAL NOT NULL,
     PricePerUnit REAL NOT NULL,
     TotalAmount REAL NOT NULL,
     CommissionAmount REAL NOT NULL,
     FarmerNetAmount REAL NOT NULL,
-    PaymentType TEXT NOT NULL, -- Cash / Credit
-    SaleDate TEXT NOT NULL,
-    Notes TEXT,
-    GrossWeight REAL NOT NULL,
-    NetWeight REAL NOT NULL,
-    TareWeight REAL NOT NULL,
+    FOREIGN KEY (SaleId) REFERENCES Sales(Id) ON DELETE CASCADE,
     FOREIGN KEY (FarmerId) REFERENCES Farmers(Id),
-    FOREIGN KEY (TraderId) REFERENCES Traders(Id),
     FOREIGN KEY (ProductId) REFERENCES Products(Id)
 );
-
 
 -- مدفوعات للمزارعين (تسديد مستحقات)
 CREATE TABLE IF NOT EXISTS FarmerPayments (
@@ -118,6 +139,3 @@ INSERT OR IGNORE INTO Settings (Key, Value) VALUES ('CommissionRate', '0.05'); -
 -- مستخدم مدير افتراضي (كلمة السر: admin)
 INSERT OR IGNORE INTO Users (Id, Username, PasswordHash, FullName, Role, IsActive)
 VALUES (1, 'admin', 'admin', 'مدير النظام', 'Admin', 1);
-
-
-

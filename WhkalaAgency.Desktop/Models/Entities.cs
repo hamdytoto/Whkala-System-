@@ -88,3 +88,33 @@ public class User
     public bool IsActive { get; set; }
 }
 
+public class Sale
+{
+    public int Id { get; set; }
+    public int TraderId { get; set; }
+    public string TraderName { get; set; } // للعرض في الجداول
+    public DateTime SaleDate { get; set; }
+    public double TotalAmount { get; set; }
+    public string PaymentType { get; set; } // Cash أو Credit
+    public string Notes { get; set; }
+
+    // قائمة بالأصناف التابعة لهذه الفاتورة
+    //public List<SaleItem> Items { get; set; } = new List<SaleItem>();
+}
+public class SaleItem
+{
+    public int Id { get; set; }
+    public int SaleId { get; set; }
+    public int FarmerId { get; set; }
+    public string FarmerName { get; set; } // للعرض
+    public int ProductId { get; set; }
+    public string ProductName { get; set; } // للعرض
+    public double Quantity { get; set; }
+    public double GrossWeight { get; set; }
+    public double TareWeight { get; set; }
+    public double NetWeight { get; set; }
+    public double PricePerUnit { get; set; }
+    public double TotalAmount { get; set; }
+    public double CommissionAmount { get; set; }
+    public double FarmerNetAmount { get; set; }
+}
