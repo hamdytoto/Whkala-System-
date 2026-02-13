@@ -176,7 +176,7 @@ private bool FilterFarmers(object obj)
         try
         {
             var hasSupplies = (long?)DatabaseService.ExecuteScalar("SELECT COUNT(1) FROM Supplies WHERE FarmerId = $id", new SqliteParameter("$id", f.Id)) ?? 0;
-            var hasSales = (long?)DatabaseService.ExecuteScalar("SELECT COUNT(1) FROM Sales WHERE FarmerId = $id", new SqliteParameter("$id", f.Id)) ?? 0;
+            var hasSales = (long?)DatabaseService.ExecuteScalar("SELECT COUNT(1) FROM sales WHERE FarmerId = $id", new SqliteParameter("$id", f.Id)) ?? 0;
             if (hasSupplies > 0 || hasSales > 0)
             {
                 MessageBox.Show("لا يمكن الحذف: يوجد توريدات أو مبيعات مرتبطة بهذا المزارع.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
